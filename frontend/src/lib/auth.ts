@@ -11,7 +11,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
       async authorize(credentials) {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+          `${process.env.API_BACKEND_URL || 'http://54.66.17.108:5000/api/v1'}/auth/login`,
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
