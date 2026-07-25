@@ -1,0 +1,32 @@
+{
+  "development": {
+    "username": "hospital_user",
+    "password": "hospital_pass",
+    "database": "hospital",
+    "host": "localhost",
+    "port": 5432,
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "hospital_user",
+    "password": "hospital_pass",
+    "database": "hospital_test",
+    "host": "localhost",
+    "port": 5432,
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "hospital_user",
+    "password": "hospital_pass",
+    "database": "hospital",
+    "host": "postgres",
+    "port": 5432,
+    "dialect": "postgres",
+    "pool": {
+      "max": 10,
+      "min": 2,
+      "acquire": 30000,
+      "idle": 10000
+    }
+  }
+}
