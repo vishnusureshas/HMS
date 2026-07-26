@@ -7,9 +7,9 @@ const router = Router();
 
 router.use(authenticate);
 
-router.post('/single', upload.single('file'), ctrl.uploadFile);
-router.post('/multiple', upload.array('files', 10), ctrl.uploadMultiple);
-router.post('/medical-record/:recordId', authorize('doctor', 'admin'), upload.single('file'), ctrl.uploadMedicalAttachment);
-router.delete('/:key', authorize('admin'), ctrl.deleteFile);
+router.post('/single', authorize('super_admin', 'admin', 'doctor', 'receptionist'), upload.single('file'), ctrl.uploadFile);
+router.post('/multiple', authorize('super_admin', 'admin', 'doctor', 'receptionist'), upload.array('files', 10), ctrl.uploadMultiple);
+router.post('/medical-record/:recordId', authorize('super_admin', 'admin', 'doctor'), upload.single('file'), ctrl.uploadMedicalAttachment);
+router.delete('/:key', authorize('super_admin', 'admin'), ctrl.deleteFile);
 
 export default router;

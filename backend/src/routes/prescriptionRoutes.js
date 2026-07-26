@@ -6,8 +6,8 @@ const router = Router();
 
 router.use(authenticate);
 
-router.get('/patient/:patientId', ctrl.getByPatientId);
-router.post('/', authorize('doctor', 'admin'), ctrl.create);
-router.put('/:id', authorize('doctor', 'admin'), ctrl.update);
+router.get('/patient/:patientId', authorize('super_admin', 'admin', 'doctor', 'patient'), ctrl.getByPatientId);
+router.post('/', authorize('super_admin', 'admin', 'doctor'), ctrl.create);
+router.put('/:id', authorize('super_admin', 'admin', 'doctor'), ctrl.update);
 
 export default router;

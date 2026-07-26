@@ -4,7 +4,7 @@ import { getDashboard, invalidateDashboardCache } from '../controllers/adminCont
 
 const router = Router();
 
-router.get('/dashboard', authenticate, authorize('super_admin', 'admin', 'doctor'), getDashboard);
+router.get('/dashboard', authenticate, authorize('super_admin', 'admin', 'doctor', 'receptionist'), getDashboard);
 router.post('/cache/clear', authenticate, authorize('super_admin'), invalidateDashboardCache);
 
 export default router;

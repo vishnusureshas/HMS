@@ -7,25 +7,21 @@ const seed = async () => {
     await sequelize.sync({ force: false });
     const hash = await bcrypt.hash('admin123', 12);
 
-    await User.findOrCreate({
-      where: { email: 'admin@hospital.com' },
-      defaults: { email: 'admin@hospital.com', password: hash, role: 'super_admin', isActive: true },
-    });
+    const users = [
+      { email: 'admin@hospital.com', role: 'super_admin' },
+      { email: 'reception@hospital.com', role: 'receptionist' },
+      { email: 'doctor@hospital.com', role: 'doctor' },
+      { email: 'patient@hospital.com', role: 'patient' },
+    ];
 
-    await User.findOrCreate({
-      where: { email: 'reception@hospital.com' },
-      defaults: { email: 'reception@hospital.com', password: hash, role: 'receptionist', isActive: true },
-    });
-
-    await User.findOrCreate({
-      where: { email: 'doctor@hospital.com' },
-      defaults: { email: 'doctor@hospital.com', password: hash, role: 'doctor', isActive: true },
-    });
-
-    await User.findOrCreate({
-      where: { email: 'patient@hospital.com' },
-      defaults: { email: 'patient@hospital.com', password: hash, role: 'patient', isActive: true },
-    });
+    for (const u of users) {
+      const existing = await User.findOne({ where: { email: u.email } });
+      if (existing) {
+        await existing.update({ password: hash, isActive: true });
+      } else {
+        await User.create({ ...u, password: hash, isActive: true });
+      }
+    }
 
     console.log('Seed completed. Default credentials:');
     console.log('  super_admin:  admin@hospital.com / admin123');
