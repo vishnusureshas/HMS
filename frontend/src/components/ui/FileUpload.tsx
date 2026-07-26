@@ -44,7 +44,7 @@ export function FileUpload({
       const { data } = await api.post('/upload/single', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      onUploadComplete(data.url);
+      onUploadComplete(data.data.url);
       toast.success('File uploaded successfully');
       setFile(null);
       setPreview(null);
