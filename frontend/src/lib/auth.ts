@@ -1,6 +1,24 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 
+const BACKEND_URL = process.env.API_BACKEND_URL || 'http://54.66.17.108:5000/api/v1';
+
+async function refreshAccessToken(token) {
+  try {
+    const res = await fetch(`${BACKEND_URL}/auth/refresh`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token.accessToken}` },
+    });
+
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error('Refresh failed');
+
+    return { ...token, accessToken: data.data.token };
+  } catch {
+    return { ...token, error: 'RefreshAccessTokenError' };
+  }
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
@@ -10,14 +28,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        const res = await fetch(
-          `${process.env.API_BACKEND_URL || 'http://54.66.17.108:5000/api/v1'}/auth/login`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(credentials),
-          }
-        );
+        const res = await fetch(`${BACKEND_URL}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(credentials),
+        });
 
         const data = await res.json();
 
@@ -38,8 +53,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         token.accessToken = user.accessToken;
         token.role = user.role;
+        const decoded = JSON.parse(Buffer.from(user.accessToken.split('.')[1], 'base64').toString());
+        token.accessTokenExpires = decoded.exp * 1000;
+        return token;
       }
-      return token;
+
+      if (Date.now() < (token.accessTokenExpires as number)) {
+        return token;
+      }
+
+      return refreshAccessToken(token);
     },
     async session({ session, token }) {
       session.accessToken = token.accessToken as string;
