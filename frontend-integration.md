@@ -501,12 +501,20 @@ export function Header() {
 
 ## 7. Pages & API Integration
 
-### 7.1 Custom Hooks (React Query) — ❌ Not Created
+### 7.1 Custom Hooks (React Query) — ✅ All 5 Built
 
-These hooks need to be implemented. Example pattern for each:
+| Hook | Endpoint | File |
+|------|----------|------|
+| `usePatients` | `/patients` | `src/hooks/usePatients.ts` |
+| `useDoctors` | `/doctors` | `src/hooks/useDoctors.ts` |
+| `useAppointments` | `/appointments` | `src/hooks/useAppointments.ts` |
+| `useBilling` | `/billing` | `src/hooks/useBilling.ts` |
+| `useUpload` | `/upload/single` | `src/hooks/useUpload.ts` |
+
+Example pattern:
 
 ```tsx
-// src/hooks/usePatients.ts (example — NOT YET CREATED)
+// src/hooks/usePatients.ts
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
 import type { Patient } from '@/types/patient';
@@ -544,15 +552,15 @@ export function useCreatePatient() {
 }
 ```
 
-Repeat the same pattern for:
-- `useDoctors.ts` → `/doctors`
-- `useAppointments.ts` → `/appointments`
-- `useBilling.ts` → `/billing`
-- `useUpload.ts` → `/upload/single`
+### 7.2 Auth Pages (Login / Register / Forgot / Reset) — ✅ Done
 
-### 7.2 Auth Pages (Login / Register) — ✅ Done
+**Forgot Password** (`forgot-password/page.tsx`): email input → POST `/auth/forgot-password` → success state.
 
-Both login and register use a **split-screen layout**:
+**Reset Password** (`reset-password/[token]/page.tsx`): new password + confirm → POST `/auth/reset-password` → success → link to login.
+
+Both use the same **split-screen layout** as login/register.
+
+Login and register use a **split-screen layout**:
 - **Left (50%)** — Dark blue gradient branding with logo, headline, feature list
 - **Right (50%)** — White form card with inputs
 
@@ -917,13 +925,15 @@ git push origin main
 | Area | Status |
 |------|--------|
 | Auth (login / register) | ✅ Done |
+| Auth (forgot/reset password) | ✅ Done |
+| Auth (refresh token) | ✅ Done |
 | Dashboard page | ✅ Done |
 | Layout (sidebar, header) | ✅ Done |
 | UI Components (6 components) | ✅ Done |
 | API client + NextAuth + React Query | ✅ Done |
 | List pages (patients, doctors, etc.) | ✅ 8 pages built |
 | Form components | ✅ 4 forms built |
-| Data hooks (usePatients, etc.) | ✅ 5 hooks built (useUpload pending) |
+| Data hooks (usePatients, useDoctors, useAppointments, useBilling, useUpload) | ✅ 5 hooks built |
 | TypeScript types | ✅ 5 type files built |
-| File upload hook (useUpload) | ❌ Not built |
+| File upload hook (useUpload) | ✅ Done |
 | RBAC in sidebar & pages | ✅ Done |
