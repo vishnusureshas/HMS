@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 import { useDoctors, useCreateDoctor, useDeleteDoctor } from '@/hooks/useDoctors';
 import { Table } from '@/components/ui/Table';
 import { Card } from '@/components/ui/Card';
@@ -8,14 +9,16 @@ import { PageSpinner } from '@/components/ui/Spinner';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { DoctorForm } from '@/components/forms/DoctorForm';
-import { Plus, Search, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Search, Trash2 } from 'lucide-react';
 import type { Doctor, DoctorFormData } from '@/types/doctor';
 
+const canManage = (role: string | null) => role === 'super_admin' || role === 'admin';
+
 export default function DoctorsPage() {
+  const { role } = useAuth();
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
-  const [editing, setEditing] = useState<Doctor | null>(null);
 
   const { data, isLoading } = useDoctors({ search, page: String(page), limit: '10' });
   const createMutation = useCreateDoctor();
@@ -23,7 +26,7 @@ export default function DoctorsPage() {
 
   const handleSubmit = (formData: DoctorFormData) => {
     createMutation.mutate(formData, {
-      onSuccess: () => { setModalOpen(false); setEditing(null); },
+      onSuccess: () => { setModalOpen(false); },
     });
   };
 
@@ -31,9 +34,11 @@ export default function DoctorsPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Doctors</h1>
-        <Button onClick={() => { setEditing(null); setModalOpen(true); }}>
-          <Plus className="h-4 w-4" /> Add Doctor
-        </Button>
+        {canManage(role) && (
+          <Button onClick={() => setModalOpen(true)}>
+            <Plus className="h-4 w-4" /> Add Doctor
+          </Button>
+        )}
       </div>
 
       <Card className="mb-6">
@@ -59,20 +64,19 @@ export default function DoctorsPage() {
               { header: 'Department', accessor: (d) => d.Department?.name || '—' },
               { header: 'License', accessor: (d) => d.licenseNumber || '—' },
               { header: 'Fee', accessor: (d) => d.consultationFee ? `$${d.consultationFee}` : '—' },
-              {
-                header: 'Status',
-                accessor: (d) => <Badge variant={d.isActive ? 'success' : 'danger'}>{d.isActive ? 'Active' : 'Inactive'}</Badge>,
-              },
-              {
-                header: 'Actions',
-                accessor: (d) => (
+              { header: 'Status', accessor: (d) => <Badge variant={d.isActive ? 'success' : 'danger'}>{d.isActive ? 'Active' : 'Inactive'}</Badge> },
+              ...(canManage(role) ? [{
+                header: 'Actions' as const,
+                accessor: (d: Doctor) => (
                   <div className="flex gap-2">
-                    <button onClick={() => deleteMutation.mutate(d.id)} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+                    {canManage(role) && (
+                      <button onClick={() => deleteMutation.mutate(d.id)} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    )}
                   </div>
                 ),
-              },
+              }] : []),
             ]}
             data={data?.data || []}
           />
@@ -90,7 +94,7 @@ export default function DoctorsPage() {
         </>
       )}
 
-      <Modal open={modalOpen} onClose={() => { setModalOpen(false); setEditing(null); }} title="Add Doctor">
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Add Doctor" size="lg">
         <DoctorForm onSubmit={handleSubmit} loading={createMutation.isPending} />
       </Modal>
     </div>

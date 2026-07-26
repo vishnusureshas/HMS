@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { Card } from '@/components/ui/Card';
@@ -7,7 +8,7 @@ import { Badge } from '@/components/ui/Badge';
 import { PageSpinner } from '@/components/ui/Spinner';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
-import { Plus, Pencil, Trash2, Building2 } from 'lucide-react';
+import { Plus, Trash2, Building2 } from 'lucide-react';
 import { toast } from 'sonner';
 import type { ApiResponse } from '@/types/index';
 
@@ -19,10 +20,12 @@ interface Department {
   Doctors?: { id: string }[];
 }
 
+const canManage = (role: string | null) => role === 'super_admin' || role === 'admin';
+
 export default function DepartmentsPage() {
+  const { role } = useAuth();
   const qc = useQueryClient();
   const [modalOpen, setModalOpen] = useState(false);
-  const [editing, setEditing] = useState<Department | null>(null);
   const [formName, setFormName] = useState('');
   const [formDesc, setFormDesc] = useState('');
 
@@ -48,15 +51,15 @@ export default function DepartmentsPage() {
     onError: (err: any) => toast.error(err.response?.data?.error || 'Failed to delete'),
   });
 
-  const openCreate = () => {
-    setEditing(null); setFormName(''); setFormDesc(''); setModalOpen(true);
-  };
-
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Departments</h1>
-        <Button onClick={openCreate}><Plus className="h-4 w-4" /> Add Department</Button>
+        {canManage(role) && (
+          <Button onClick={() => { setFormName(''); setFormDesc(''); setModalOpen(true); }}>
+            <Plus className="h-4 w-4" /> Add Department
+          </Button>
+        )}
       </div>
 
       {isLoading ? (
@@ -78,12 +81,14 @@ export default function DepartmentsPage() {
                 <Badge variant={dept.isActive ? 'success' : 'danger'}>{dept.isActive ? 'Active' : 'Inactive'}</Badge>
               </div>
               {dept.description && <p className="text-sm text-gray-500 mt-3">{dept.description}</p>}
-              <div className="flex gap-2 mt-4 pt-3 border-t border-gray-100">
-                <button onClick={() => deleteMutation.mutate(dept.id)}
-                  className="flex items-center gap-1 text-xs px-2.5 py-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
-                  <Trash2 className="h-3 w-3" /> Delete
-                </button>
-              </div>
+              {canManage(role) && (
+                <div className="flex gap-2 mt-4 pt-3 border-t border-gray-100">
+                  <button onClick={() => deleteMutation.mutate(dept.id)}
+                    className="flex items-center gap-1 text-xs px-2.5 py-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                    <Trash2 className="h-3 w-3" /> Delete
+                  </button>
+                </div>
+              )}
             </Card>
           ))}
           {(!departments || departments.length === 0) && (

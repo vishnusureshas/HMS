@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 import { usePatients, useCreatePatient, useDeletePatient } from '@/hooks/usePatients';
 import { Table } from '@/components/ui/Table';
 import { Card } from '@/components/ui/Card';
@@ -11,7 +12,12 @@ import { PatientForm } from '@/components/forms/PatientForm';
 import { Plus, Search, Pencil, Trash2 } from 'lucide-react';
 import type { Patient, PatientFormData } from '@/types/patient';
 
+const canCreate = (role: string | null) => role && ['super_admin', 'admin', 'receptionist'].includes(role);
+const canEdit = (role: string | null) => role && ['super_admin', 'admin', 'receptionist', 'doctor'].includes(role);
+const canDelete = (role: string | null) => role && ['super_admin', 'admin'].includes(role);
+
 export default function PatientsPage() {
+  const { role } = useAuth();
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
@@ -22,24 +28,13 @@ export default function PatientsPage() {
   const deleteMutation = useDeletePatient();
 
   const handleSubmit = (formData: PatientFormData) => {
-    if (editing) {
-      createMutation.mutate(formData, {
-        onSuccess: () => { setModalOpen(false); setEditing(null); },
-      });
-    } else {
-      createMutation.mutate(formData, {
-        onSuccess: () => { setModalOpen(false); },
-      });
-    }
+    createMutation.mutate(formData, {
+      onSuccess: () => { setModalOpen(false); setEditing(null); },
+    });
   };
 
   const openEdit = (patient: Patient) => {
     setEditing(patient);
-    setModalOpen(true);
-  };
-
-  const openCreate = () => {
-    setEditing(null);
     setModalOpen(true);
   };
 
@@ -52,9 +47,11 @@ export default function PatientsPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Patients</h1>
-        <Button onClick={openCreate}>
-          <Plus className="h-4 w-4" /> Add Patient
-        </Button>
+        {canCreate(role) && (
+          <Button onClick={() => { setEditing(null); setModalOpen(true); }}>
+            <Plus className="h-4 w-4" /> Add Patient
+          </Button>
+        )}
       </div>
 
       <Card className="mb-6">
@@ -80,19 +77,23 @@ export default function PatientsPage() {
               { header: 'Phone', accessor: (p) => p.phone || '—' },
               { header: 'Blood Group', accessor: (p) => p.bloodGroup || '—' },
               { header: 'Email', accessor: (p) => p.User?.email || '—' },
-              {
-                header: 'Actions',
-                accessor: (p) => (
+              ...(canEdit(role) || canDelete(role) ? [{
+                header: 'Actions' as const,
+                accessor: (p: Patient) => (
                   <div className="flex gap-2">
-                    <button onClick={() => openEdit(p)} className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-                      <Pencil className="h-4 w-4" />
-                    </button>
-                    <button onClick={() => deleteMutation.mutate(p.id)} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+                    {canEdit(role) && (
+                      <button onClick={() => openEdit(p)} className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                        <Pencil className="h-4 w-4" />
+                      </button>
+                    )}
+                    {canDelete(role) && (
+                      <button onClick={() => deleteMutation.mutate(p.id)} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    )}
                   </div>
                 ),
-              },
+              }] : []),
             ]}
             data={data?.data || []}
           />
@@ -101,9 +102,9 @@ export default function PatientsPage() {
               <span>Page {data.pagination.page} of {data.pagination.pages}</span>
               <div className="flex gap-2">
                 <button disabled={page <= 1} onClick={() => setPage(page - 1)}
-                  className="px-3 py-1.5 border rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors">Previous</button>
+                  className="px-3 py-1.5 border rounded-lg hover:bg-gray-50 disabled:opacity-50">Previous</button>
                 <button disabled={page >= (data.pagination.pages || 1)} onClick={() => setPage(page + 1)}
-                  className="px-3 py-1.5 border rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors">Next</button>
+                  className="px-3 py-1.5 border rounded-lg hover:bg-gray-50 disabled:opacity-50">Next</button>
               </div>
             </div>
           )}

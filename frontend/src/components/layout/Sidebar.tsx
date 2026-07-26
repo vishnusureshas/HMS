@@ -1,11 +1,24 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 import {
   LayoutDashboard, Users, Stethoscope, Calendar,
   FileText, Pill, DollarSign, Building2, Settings,
 } from 'lucide-react';
+
+const roleAccess: Record<string, string[]> = {
+  Dashboard: ['super_admin', 'admin', 'doctor', 'receptionist', 'patient'],
+  Patients: ['super_admin', 'admin', 'doctor', 'receptionist'],
+  Doctors: ['super_admin', 'admin', 'doctor', 'receptionist', 'patient'],
+  Appointments: ['super_admin', 'admin', 'doctor', 'receptionist', 'patient'],
+  'Medical Records': ['super_admin', 'admin', 'doctor', 'patient'],
+  Prescriptions: ['super_admin', 'admin', 'doctor', 'patient'],
+  Billing: ['super_admin', 'admin', 'receptionist', 'patient'],
+  Departments: ['super_admin', 'admin'],
+  Settings: ['super_admin', 'admin', 'doctor', 'receptionist', 'patient'],
+};
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -21,6 +34,11 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { role } = useAuth();
+
+  const visibleItems = navItems.filter(
+    (item) => role && roleAccess[item.label]?.includes(role)
+  );
 
   return (
     <aside className="w-64 bg-white border-r border-gray-200 flex flex-col h-screen sticky top-0">
@@ -33,7 +51,7 @@ export function Sidebar() {
         </Link>
       </div>
       <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
-        {navItems.map((item) => {
+        {visibleItems.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
           return (
