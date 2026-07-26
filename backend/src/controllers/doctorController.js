@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs';
 import { Op } from 'sequelize';
 import { Doctor, User, Department, Appointment } from '../models/index.js';
 
@@ -70,11 +71,20 @@ export const create = async (req, res, next) => {
   try {
     const { userId, departmentId, firstName, lastName, specialization, licenseNumber, consultationFee, availableDays, availableTime } = req.body;
 
-    const user = await User.findByPk(userId);
-    if (!user) return res.status(400).json({ success: false, error: 'User not found' });
+    let targetUserId = userId;
 
-    const existing = await Doctor.findOne({ where: { userId } });
-    if (existing) return res.status(400).json({ success: false, error: 'Doctor profile already exists for this user' });
+    if (!targetUserId) {
+      const email = `doctor_${Date.now()}@hospital.com`;
+      const hash = await bcrypt.hash('doctor123', 12);
+      const user = await User.create({ email, password: hash, role: 'doctor', isActive: true });
+      targetUserId = user.id;
+    } else {
+      const user = await User.findByPk(targetUserId);
+      if (!user) return res.status(400).json({ success: false, error: 'User not found' });
+
+      const existing = await Doctor.findOne({ where: { userId: targetUserId } });
+      if (existing) return res.status(400).json({ success: false, error: 'Doctor profile already exists for this user' });
+    }
 
     if (licenseNumber) {
       const licenseExists = await Doctor.findOne({ where: { licenseNumber } });
@@ -82,7 +92,7 @@ export const create = async (req, res, next) => {
     }
 
     const doctor = await Doctor.create({
-      userId, departmentId, firstName, lastName, specialization,
+      userId: targetUserId, departmentId, firstName, lastName, specialization,
       licenseNumber, consultationFee, availableDays, availableTime,
     });
 

@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { usePatients, useCreatePatient, useDeletePatient } from '@/hooks/usePatients';
+import { usePatients, useCreatePatient, useUpdatePatient, useDeletePatient } from '@/hooks/usePatients';
 import { Table } from '@/components/ui/Table';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
@@ -25,12 +25,19 @@ export default function PatientsPage() {
 
   const { data, isLoading } = usePatients({ search, page: String(page), limit: '10' });
   const createMutation = useCreatePatient();
+  const updateMutation = useUpdatePatient(editing?.id || '');
   const deleteMutation = useDeletePatient();
 
   const handleSubmit = (formData: PatientFormData) => {
-    createMutation.mutate(formData, {
-      onSuccess: () => { setModalOpen(false); setEditing(null); },
-    });
+    if (editing) {
+      updateMutation.mutate(formData, {
+        onSuccess: () => { setModalOpen(false); setEditing(null); },
+      });
+    } else {
+      createMutation.mutate(formData, {
+        onSuccess: () => { setModalOpen(false); setEditing(null); },
+      });
+    }
   };
 
   const openEdit = (patient: Patient) => {
@@ -115,7 +122,7 @@ export default function PatientsPage() {
         <PatientForm
           initial={editing ? { firstName: editing.firstName, lastName: editing.lastName, dateOfBirth: editing.dateOfBirth || '', gender: editing.gender || '', phone: editing.phone || '', address: editing.address || '', bloodGroup: editing.bloodGroup || '' } : undefined}
           onSubmit={handleSubmit}
-          loading={createMutation.isPending}
+          loading={editing ? updateMutation.isPending : createMutation.isPending}
         />
       </Modal>
     </div>
