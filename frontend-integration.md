@@ -50,14 +50,14 @@ frontend/
 │   │   ├── (dashboard)/                     # Dashboard layout group
 │   │   │   ├── layout.tsx                   # ✅ Delegates to DashboardLayout
 │   │   │   ├── page.tsx                     # ✅ Admin dashboard (stats cards)
-│   │   │   ├── patients/                    # 📁 Empty (page.tsx missing)
-│   │   │   ├── doctors/                     # 📁 Empty
-│   │   │   ├── appointments/                # 📁 Empty
-│   │   │   ├── billing/                     # 📁 Empty
-│   │   │   ├── medical-records/             # 📁 Empty
-│   │   │   ├── prescriptions/               # 📁 Empty
-│   │   │   ├── departments/                 # 📁 Empty
-│   │   │   └── settings/                    # 📁 Empty
+│   │   │   ├── patients/page.tsx            # ✅ Full CRUD with RBAC
+│   │   │   ├── doctors/page.tsx             # ✅ Full CRUD with RBAC
+│   │   │   ├── appointments/page.tsx        # ✅ Full CRUD with status flow
+│   │   │   ├── billing/page.tsx             # ✅ Full CRUD with payment
+│   │   │   ├── medical-records/page.tsx     # ✅ Patient selector + table
+│   │   │   ├── prescriptions/page.tsx       # ✅ Patient selector + table
+│   │   │   ├── departments/page.tsx         # ✅ Card grid + CRUD
+│   │   │   └── settings/page.tsx            # ✅ Profile info display
 │   │   ├── api/
 │   │   │   └── auth/[...nextauth]/route.ts  # ✅ NextAuth handler
 │   │   ├── layout.tsx                       # ✅ Root layout
@@ -75,25 +75,29 @@ frontend/
 │   │   │   ├── DashboardLayout.tsx          # ✅ Sidebar + header wrapper
 │   │   │   ├── Header.tsx                   # ✅ User info + logout
 │   │   │   └── Sidebar.tsx                  # ✅ Navigation links
-│   │   └── forms/                           # 📁 Empty (PatientForm, DoctorForm, etc.)
+│   │   └── forms/
+│   │       ├── PatientForm.tsx              # ✅ With email/password for auto-create
+│   │       ├── DoctorForm.tsx               # ✅ With department select
+│   │       ├── AppointmentForm.tsx          # ✅ With patient/doctor selects
+│   │       └── BillingForm.tsx              # ✅ With dynamic invoice items
 │   ├── lib/
 │   │   ├── api.ts                           # ✅ Axios instance
 │   │   ├── auth.ts                          # ✅ NextAuth config
 │   │   └── utils.ts                         # ✅ cn() + formatDate()
 │   ├── hooks/
 │   │   ├── useAuth.ts                       # ✅ Session shorthand
-│   │   ├── usePatients.ts                   # ❌ Not created
-│   │   ├── useDoctors.ts                    # ❌ Not created
-│   │   ├── useAppointments.ts              # ❌ Not created
-│   │   ├── useBilling.ts                    # ❌ Not created
+│   │   ├── usePatients.ts                   # ✅ CRUD + pagination
+│   │   ├── useDoctors.ts                    # ✅ CRUD + pagination
+│   │   ├── useAppointments.ts              # ✅ CRUD + status flow
+│   │   ├── useBilling.ts                    # ✅ List + create + payment
 │   │   └── useUpload.ts                     # ❌ Not created
 │   ├── types/
 │   │   ├── next-auth.d.ts                   # ✅ Session type augmentation
-│   │   ├── index.ts                         # ❌ Not created
-│   │   ├── patient.ts                       # ❌ Not created
-│   │   ├── doctor.ts                        # ❌ Not created
-│   │   ├── appointment.ts                   # ❌ Not created
-│   │   └── billing.ts                       # ❌ Not created
+│   │   ├── index.ts                         # ✅ ApiResponse, PaginatedResponse
+│   │   ├── patient.ts                       # ✅ Patient + PatientFormData
+│   │   ├── doctor.ts                        # ✅ Doctor + DoctorFormData
+│   │   ├── appointment.ts                   # ✅ Appointment + statuses
+│   │   └── billing.ts                       # ✅ Billing + BillingFormData
 │   └── providers/
 │       ├── QueryProvider.tsx                # ✅ React Query provider
 │       └── SessionProvider.tsx              # ✅ NextAuth session provider
@@ -917,8 +921,9 @@ git push origin main
 | Layout (sidebar, header) | ✅ Done |
 | UI Components (6 components) | ✅ Done |
 | API client + NextAuth + React Query | ✅ Done |
-| List pages (patients, doctors, etc.) | ❌ 8 pages not built |
-| Form components | ❌ 4 forms not built |
-| Data hooks (usePatients, etc.) | ❌ 5 hooks not built |
-| TypeScript types | ❌ 5 type files not built |
+| List pages (patients, doctors, etc.) | ✅ 8 pages built |
+| Form components | ✅ 4 forms built |
+| Data hooks (usePatients, etc.) | ✅ 5 hooks built (useUpload pending) |
+| TypeScript types | ✅ 5 type files built |
 | File upload hook (useUpload) | ❌ Not built |
+| RBAC in sidebar & pages | ✅ Done |
