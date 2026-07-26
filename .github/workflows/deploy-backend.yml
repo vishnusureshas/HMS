@@ -49,10 +49,9 @@ jobs:
           EC2_HOST: ${{ secrets.EC2_HOST }}
           EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
         run: |
-          set -e
           echo "$EC2_SSH_KEY" > /tmp/ssh_key
           chmod 600 /tmp/ssh_key
-          ssh -o StrictHostKeyChecking=no -i /tmp/ssh_key ec2-user@$EC2_HOST << 'EOF'
+          ssh -vvv -o StrictHostKeyChecking=no -i /tmp/ssh_key ec2-user@$EC2_HOST << 'EOF'
             set -e
             cd /home/ec2-user/HMS
             git pull
