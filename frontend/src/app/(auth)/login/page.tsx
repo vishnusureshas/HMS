@@ -84,7 +84,7 @@ export default function LoginPage() {
       </div>
 
       {/* Right - Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50/40 p-6">
+      <div className="w-full lg:w-1/2 flex items-center justify-center bg-white p-6">
         <div className="w-full max-w-md">
           <div className="mb-8">
             <h2 className="text-3xl font-bold text-gray-900">Sign In</h2>
@@ -100,7 +100,7 @@ export default function LoginPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-shadow bg-white/80"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-shadow bg-gray-50 text-black placeholder-gray-500"
                 placeholder="you@example.com"
                 required
               />
@@ -114,7 +114,7 @@ export default function LoginPage() {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-shadow bg-white/80 pr-12"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-shadow bg-gray-50 text-black placeholder-gray-500 pr-12"
                   placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
                   required
                 />

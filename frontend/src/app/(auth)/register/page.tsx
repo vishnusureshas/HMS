@@ -152,7 +152,7 @@ export default function RegisterPage() {
       </div>
 
       {/* Right - Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50/40 p-6 overflow-y-auto">
+      <div className="w-full lg:w-1/2 flex items-center justify-center bg-white p-6 overflow-y-auto">
         <div className="w-full max-w-md py-8">
           {step === 'select-role' ? (
             <>
@@ -287,7 +287,7 @@ export default function RegisterPage() {
                     <input
                       value={form.firstName}
                       onChange={(e) => update('firstName', e.target.value)}
-                      className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white/80"
+                      className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-gray-50 text-black"
                       required
                     />
                   </div>
@@ -298,7 +298,7 @@ export default function RegisterPage() {
                     <input
                       value={form.lastName}
                       onChange={(e) => update('lastName', e.target.value)}
-                      className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white/80"
+                      className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-gray-50 text-black"
                       required
                     />
                   </div>
@@ -312,7 +312,7 @@ export default function RegisterPage() {
                     type="email"
                     value={form.email}
                     onChange={(e) => update('email', e.target.value)}
-                    className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white/80"
+                    className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-gray-50 text-black"
                     required
                   />
                 </div>
@@ -326,7 +326,7 @@ export default function RegisterPage() {
                       type="password"
                       value={form.password}
                       onChange={(e) => update('password', e.target.value)}
-                      className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white/80"
+                      className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-gray-50 text-black"
                       minLength={6}
                       required
                     />
@@ -339,7 +339,7 @@ export default function RegisterPage() {
                       type="password"
                       value={form.confirmPassword}
                       onChange={(e) => update('confirmPassword', e.target.value)}
-                      className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white/80"
+                      className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-gray-50 text-black"
                       minLength={6}
                       required
                     />
@@ -354,7 +354,7 @@ export default function RegisterPage() {
                     <input
                       value={form.phone}
                       onChange={(e) => update('phone', e.target.value)}
-                      className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white/80"
+                      className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-gray-50 text-black"
                     />
                   </div>
                   <div>
@@ -365,7 +365,7 @@ export default function RegisterPage() {
                       type="date"
                       value={form.dateOfBirth}
                       onChange={(e) => update('dateOfBirth', e.target.value)}
-                      className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white/80"
+                      className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-gray-50 text-black"
                     />
                   </div>
                 </div>
@@ -377,7 +377,7 @@ export default function RegisterPage() {
                   <select
                     value={form.gender}
                     onChange={(e) => update('gender', e.target.value)}
-                    className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white/80"
+                    className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-gray-50 text-black"
                   >
                     <option value="">Select gender</option>
                     <option value="male">Male</option>
@@ -395,7 +395,7 @@ export default function RegisterPage() {
                       <input
                         value={form.specialization}
                         onChange={(e) => update('specialization', e.target.value)}
-                        className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white/80"
+                        className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-gray-50 text-black"
                       />
                     </div>
                     <div>
@@ -405,7 +405,7 @@ export default function RegisterPage() {
                       <input
                         value={form.licenseNumber}
                         onChange={(e) => update('licenseNumber', e.target.value)}
-                        className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white/80"
+                        className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-gray-50 text-black"
                       />
                     </div>
                   </div>
