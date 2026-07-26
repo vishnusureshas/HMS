@@ -80,9 +80,10 @@ export const create = async (req, res, next) => {
     let targetUserId = userId;
 
     if (!targetUserId) {
-      const email = `patient_${Date.now()}@hospital.com`;
-      const hash = await bcrypt.hash('patient123', 12);
-      const user = await User.create({ email, password: hash, role: 'patient', isActive: true });
+      const patientEmail = req.body.email || `patient_${Date.now()}@hospital.com`;
+      const patientPassword = req.body.password || 'patient123';
+      const hash = await bcrypt.hash(patientPassword, 12);
+      const user = await User.create({ email: patientEmail, password: hash, role: 'patient', isActive: true });
       targetUserId = user.id;
     } else {
       const user = await User.findByPk(targetUserId);

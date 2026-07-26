@@ -24,4 +24,6 @@ export interface PatientFormData {
   phone: string;
   address: string;
   bloodGroup: string;
+  email?: string;
+  password?: string;
 }
