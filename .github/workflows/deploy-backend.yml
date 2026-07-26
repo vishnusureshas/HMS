@@ -45,15 +45,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to EC2
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ec2-user
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+        run: |
+          set -e
+          echo "$EC2_SSH_KEY" > /tmp/ssh_key
+          chmod 600 /tmp/ssh_key
+          ssh -o StrictHostKeyChecking=no -i /tmp/ssh_key ec2-user@$EC2_HOST << 'EOF'
+            set -e
             cd /home/ec2-user/HMS
             git pull
             sudo docker-compose down
             sudo docker-compose up --build -d
             sleep 5
             sudo docker exec hospital-backend node seed.js
+          EOF
