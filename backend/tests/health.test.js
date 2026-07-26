@@ -1,5 +1,14 @@
 import request from 'supertest';
 import app from '../src/app.js';
+import { connectRedis, disconnectRedis } from '../src/config/redis.js';
+
+beforeAll(async () => {
+  await connectRedis();
+});
+
+afterAll(async () => {
+  await disconnectRedis();
+});
 
 describe('Health Check', () => {
   it('should return health status', async () => {
