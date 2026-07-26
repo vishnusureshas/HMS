@@ -6,7 +6,7 @@ import { User, Patient, Doctor } from './src/models/index.js';
 
 const seed = async () => {
   try {
-    await sequelize.sync({ force: false });
+    await sequelize.sync({ alter: true });
     const hash = await bcrypt.hash('admin123', 12);
 
     const users = [
