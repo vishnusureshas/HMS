@@ -15,9 +15,9 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /home/ec2-user/app
+            cd /home/ec2-user/HMS
             git pull
-            docker-compose down
-            docker-compose up --build -d
+            sudo docker-compose down
+            sudo docker-compose up --build -d
             sleep 5
-            docker exec hospital-backend node seed.js
+            sudo docker exec hospital-backend node seed.js
