@@ -31,7 +31,7 @@ export default function RootLayout({
         <SessionProvider>
           <QueryProvider>
             {children}
-            <Toaster richColors position="top-right" />
+            <Toaster theme="dark" richColors position="top-right" />
           </QueryProvider>
         </SessionProvider>
       </body>
