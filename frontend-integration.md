@@ -1,6 +1,6 @@
 # Hospital Management System — Frontend Integration (Next.js + Tailwind CSS)
 
-> **Tech Stack:** Next.js 14 (App Router), TypeScript, Tailwind CSS, Axios, React Query, NextAuth.js
+> **Tech Stack:** Next.js 16 (App Router), TypeScript, Tailwind CSS v4, Axios, React Query, NextAuth.js v5
 
 ---
 
@@ -41,73 +41,68 @@ npm install --save-dev @types/node
 ```
 frontend/
 ├── public/
-│   └── uploads/                    # Local fallback for uploads
 ├── src/
 │   ├── app/
-│   │   ├── (auth)/                 # Auth layout group
-│   │   │   ├── login/page.tsx
-│   │   │   └── register/page.tsx
-│   │   ├── (dashboard)/            # Dashboard layout group
-│   │   │   ├── layout.tsx          # Sidebar + header
-│   │   │   ├── page.tsx            # Admin dashboard
-│   │   │   ├── patients/
-│   │   │   ├── doctors/
-│   │   │   ├── appointments/
-│   │   │   ├── billing/
-│   │   │   ├── medical-records/
-│   │   │   ├── prescriptions/
-│   │   │   ├── departments/
-│   │   │   └── settings/
+│   │   ├── (auth)/                          # Auth layout group
+│   │   │   ├── layout.tsx                   # ✅ Passthrough layout
+│   │   │   ├── login/page.tsx               # ✅ Split‑screen (left brand / right form)
+│   │   │   └── register/page.tsx            # ✅ Split‑screen with role selection
+│   │   ├── (dashboard)/                     # Dashboard layout group
+│   │   │   ├── layout.tsx                   # ✅ Delegates to DashboardLayout
+│   │   │   ├── page.tsx                     # ✅ Admin dashboard (stats cards)
+│   │   │   ├── patients/                    # 📁 Empty (page.tsx missing)
+│   │   │   ├── doctors/                     # 📁 Empty
+│   │   │   ├── appointments/                # 📁 Empty
+│   │   │   ├── billing/                     # 📁 Empty
+│   │   │   ├── medical-records/             # 📁 Empty
+│   │   │   ├── prescriptions/               # 📁 Empty
+│   │   │   ├── departments/                 # 📁 Empty
+│   │   │   └── settings/                    # 📁 Empty
 │   │   ├── api/
-│   │   │   └── auth/[...nextauth]/
-│   │   │       └── route.ts        # NextAuth handler
-│   │   ├── layout.tsx              # Root layout
-│   │   ├── page.tsx                # Landing page
-│   │   └── globals.css             # Tailwind imports
+│   │   │   └── auth/[...nextauth]/route.ts  # ✅ NextAuth handler
+│   │   ├── layout.tsx                       # ✅ Root layout
+│   │   ├── page.tsx                         # ✅ Redirects to /login
+│   │   └── globals.css                      # ✅ Tailwind v4 + CSS variables
 │   ├── components/
-│   │   ├── ui/                     # Reusable UI components
-│   │   │   ├── Button.tsx
-│   │   │   ├── Input.tsx
-│   │   │   ├── Modal.tsx
-│   │   │   ├── Table.tsx
-│   │   │   ├── Card.tsx
-│   │   │   ├── Badge.tsx
-│   │   │   ├── Spinner.tsx
-│   │   │   └── FileUpload.tsx
+│   │   ├── ui/                              # Reusable UI components
+│   │   │   ├── Badge.tsx                    # ✅
+│   │   │   ├── Button.tsx                   # ✅ (with loading spinner)
+│   │   │   ├── Card.tsx                     # ✅
+│   │   │   ├── FileUpload.tsx               # ✅ (drag‑and‑drop + preview)
+│   │   │   ├── Spinner.tsx                  # ✅
+│   │   │   └── Table.tsx                    # ✅ (generic typed table)
 │   │   ├── layout/
-│   │   │   ├── Sidebar.tsx
-│   │   │   ├── Header.tsx
-│   │   │   └── DashboardLayout.tsx
-│   │   └── forms/
-│   │       ├── PatientForm.tsx
-│   │       ├── DoctorForm.tsx
-│   │       ├── AppointmentForm.tsx
-│   │       └── BillingForm.tsx
+│   │   │   ├── DashboardLayout.tsx          # ✅ Sidebar + header wrapper
+│   │   │   ├── Header.tsx                   # ✅ User info + logout
+│   │   │   └── Sidebar.tsx                  # ✅ Navigation links
+│   │   └── forms/                           # 📁 Empty (PatientForm, DoctorForm, etc.)
 │   ├── lib/
-│   │   ├── api.ts                  # Axios instance
-│   │   ├── auth.ts                 # NextAuth config
-│   │   └── utils.ts                # Utility functions
+│   │   ├── api.ts                           # ✅ Axios instance
+│   │   ├── auth.ts                          # ✅ NextAuth config
+│   │   └── utils.ts                         # ✅ cn() + formatDate()
 │   ├── hooks/
-│   │   ├── useAuth.ts
-│   │   ├── usePatients.ts
-│   │   ├── useDoctors.ts
-│   │   ├── useAppointments.ts
-│   │   ├── useBilling.ts
-│   │   └── useUpload.ts
+│   │   ├── useAuth.ts                       # ✅ Session shorthand
+│   │   ├── usePatients.ts                   # ❌ Not created
+│   │   ├── useDoctors.ts                    # ❌ Not created
+│   │   ├── useAppointments.ts              # ❌ Not created
+│   │   ├── useBilling.ts                    # ❌ Not created
+│   │   └── useUpload.ts                     # ❌ Not created
 │   ├── types/
-│   │   ├── index.ts                # Shared TypeScript types
-│   │   ├── patient.ts
-│   │   ├── doctor.ts
-│   │   ├── appointment.ts
-│   │   └── billing.ts
+│   │   ├── next-auth.d.ts                   # ✅ Session type augmentation
+│   │   ├── index.ts                         # ❌ Not created
+│   │   ├── patient.ts                       # ❌ Not created
+│   │   ├── doctor.ts                        # ❌ Not created
+│   │   ├── appointment.ts                   # ❌ Not created
+│   │   └── billing.ts                       # ❌ Not created
 │   └── providers/
-│       ├── QueryProvider.tsx        # React Query provider
-│       └── SessionProvider.tsx      # NextAuth session provider
-├── .env.local
-├── tailwind.config.ts
-├── next.config.js
-└── package.json
+│       ├── QueryProvider.tsx                # ✅ React Query provider
+│       └── SessionProvider.tsx              # ✅ NextAuth session provider
+├── .env.local                               # ✅
+├── next.config.ts                           # ✅ (with API rewrites)
+└── package.json                             # ✅
 ```
+
+**Legend:** ✅ = done, 📁 = directory exists but empty, ❌ = not created
 
 ---
 
@@ -134,11 +129,8 @@ api.interceptors.request.use(async (config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      // Redirect to login
-      if (typeof window !== 'undefined') {
-        window.location.href = '/login';
-      }
+    if (error.response?.status === 401 && typeof window !== 'undefined') {
+      window.location.href = '/login';
     }
     return Promise.reject(error);
   }
@@ -146,6 +138,9 @@ api.interceptors.response.use(
 
 export default api;
 ```
+
+> **Note:** The backend wraps all responses in `{ success: true, data: ... }`.  
+> Callers must unwrap: `const { data } = await api.get(...)` → `data.data` is the payload.
 
 ---
 
@@ -168,7 +163,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
       async authorize(credentials) {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+          `${process.env.API_BACKEND_URL || 'http://54.66.17.108:5000/api/v1'}/auth/login`,
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -204,12 +199,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
   },
-  pages: {
-    signIn: '/login',
-  },
+  pages: { signIn: '/login' },
   session: { strategy: 'jwt' },
 });
 ```
+
+> **Note:** Uses `API_BACKEND_URL` (direct backend URL) rather than the proxied `NEXT_PUBLIC_API_URL`, because NextAuth runs on the server.
 
 ### Route Handler
 
@@ -293,32 +288,38 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
 
 ```tsx
 // src/app/layout.tsx
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import './globals.css';
-import { QueryProvider } from '@/providers/QueryProvider';
-import { SessionProvider } from '@/providers/SessionProvider';
-import { Toaster } from 'sonner';
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
+import { SessionProvider } from "@/providers/SessionProvider";
+import { QueryProvider } from "@/providers/QueryProvider";
+import { Toaster } from "sonner";
 
-const inter = Inter({ subsets: ['latin'] });
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
-  title: 'Hospital Management System',
-  description: 'PERN Stack Hospital Management',
+  title: "Hospital Management System",
+  description: "PERN Stack Hospital Management System",
 };
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body>
         <SessionProvider>
           <QueryProvider>
             {children}
-            <Toaster richColors position="top-right" />
+            <Toaster theme="dark" richColors position="top-right" />
           </QueryProvider>
         </SessionProvider>
       </body>
@@ -331,39 +332,43 @@ export default function RootLayout({
 
 ## 6. Layout & Theme (Tailwind)
 
-### Tailwind Config
+Tailwind **v4** is used — no `tailwind.config.ts`. Configuration is done via CSS:
 
-```ts
-// tailwind.config.ts
-import type { Config } from 'tailwindcss';
+```css
+/* src/app/globals.css */
+@import "tailwindcss";
 
-const config: Config = {
-  content: ['./src/**/*.{ts,tsx}'],
-  theme: {
-    extend: {
-      colors: {
-        primary: {
-          50:  '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
-        },
-        success: '#10b981',
-        warning: '#f59e0b',
-        danger:  '#ef4444',
-      },
-    },
-  },
-  plugins: [],
-};
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
 
-export default config;
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+```
+
+Custom theme tokens can be added in `@theme inline {}`:
+
+```css
+@theme inline {
+  --color-primary-50:  #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger:  #ef4444;
+}
 ```
 
 ### Dashboard Layout (Sidebar + Header)
@@ -384,6 +389,15 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       </div>
     </div>
   );
+}
+```
+
+```tsx
+// src/app/(dashboard)/layout.tsx
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
+
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return <DashboardLayout>{children}</DashboardLayout>;
 }
 ```
 
@@ -483,10 +497,12 @@ export function Header() {
 
 ## 7. Pages & API Integration
 
-### 7.1 Custom Hooks (React Query)
+### 7.1 Custom Hooks (React Query) — ❌ Not Created
+
+These hooks need to be implemented. Example pattern for each:
 
 ```tsx
-// src/hooks/usePatients.ts
+// src/hooks/usePatients.ts (example — NOT YET CREATED)
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
 import type { Patient } from '@/types/patient';
@@ -524,89 +540,34 @@ export function useCreatePatient() {
 }
 ```
 
-### 7.2 Login Page
+Repeat the same pattern for:
+- `useDoctors.ts` → `/doctors`
+- `useAppointments.ts` → `/appointments`
+- `useBilling.ts` → `/billing`
+- `useUpload.ts` → `/upload/single`
 
-```tsx
-// src/app/(auth)/login/page.tsx
-'use client';
-import { useState } from 'react';
-import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
+### 7.2 Auth Pages (Login / Register) — ✅ Done
 
-export default function LoginPage() {
-  const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+Both login and register use a **split-screen layout**:
+- **Left (50%)** — Dark blue gradient branding with logo, headline, feature list
+- **Right (50%)** — White form card with inputs
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+**Login** (`login/page.tsx`):
+- Email + password inputs (with show/hide toggle)
+- "Remember me" checkbox + "Forgot password" link
+- Calls `signIn('credentials', ...)` from next-auth/react
+- On success redirects to `/dashboard`
 
-    const result = await signIn('credentials', {
-      email,
-      password,
-      redirect: false,
-    });
+**Register** (`register/page.tsx`):
+- Step 1: Choose role (Patient or Doctor) — card-style selection
+- Step 2: Fill details (name, email, password, phone, DOB, gender)
+- Doctor-specific fields: specialization, license number
+- Posts to `/auth/register` via API client
+- On success redirects to `/login`
 
-    setLoading(false);
+**Auth layout** (`(auth)/layout.tsx`): passthrough — each page renders its own full‑viewport split layout.
 
-    if (result?.error) {
-      toast.error('Invalid email or password');
-      return;
-    }
-
-    toast.success('Logged in successfully');
-    router.push('/dashboard');
-  };
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-8">
-        <h1 className="text-2xl font-bold text-center mb-6">
-          Hospital Management System
-        </h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-2 px-4 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 transition-colors"
-          >
-            {loading ? 'Signing in...' : 'Sign In'}
-          </button>
-        </form>
-      </div>
-    </div>
-  );
-}
-```
-
-### 7.3 Dashboard Page
+### 7.3 Dashboard Page — ✅ Done
 
 ```tsx
 // src/app/(dashboard)/page.tsx
@@ -614,10 +575,11 @@ export default function LoginPage() {
 import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { Card } from '@/components/ui/Card';
+import { Spinner } from '@/components/ui/Spinner';
 import { Users, Stethoscope, Calendar, DollarSign } from 'lucide-react';
 
 export default function DashboardPage() {
-  const { data: stats } = useQuery({
+  const { data: stats, isLoading } = useQuery({
     queryKey: ['dashboard'],
     queryFn: async () => {
       const { data } = await api.get('/admin/dashboard');
@@ -625,16 +587,24 @@ export default function DashboardPage() {
     },
   });
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
+
   const cards = [
-    { label: 'Total Patients',   value: stats?.totalPatients,   icon: Users,      color: 'text-blue-600' },
-    { label: 'Active Doctors',   value: stats?.totalDoctors,    icon: Stethoscope, color: 'text-green-600' },
-    { label: "Today's Appts",    value: stats?.todayAppointments,icon: Calendar,   color: 'text-purple-600' },
-    { label: 'Revenue',          value: `$${stats?.revenue || 0}`, icon: DollarSign, color: 'text-amber-600' },
+    { label: 'Total Patients',   value: stats?.totalPatients ?? '—', icon: Users,      color: 'text-blue-600' },
+    { label: 'Active Doctors',   value: stats?.totalDoctors ?? '—',  icon: Stethoscope, color: 'text-green-600' },
+    { label: "Today's Appointments", value: stats?.todayAppointments ?? '—', icon: Calendar, color: 'text-purple-600' },
+    { label: 'Revenue',          value: stats?.revenue ? `$${Number(stats.revenue).toLocaleString()}` : '$0', icon: DollarSign, color: 'text-amber-600' },
   ];
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">Dashboard</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {cards.map((card) => {
           const Icon = card.icon;
@@ -643,9 +613,11 @@ export default function DashboardPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-500">{card.label}</p>
-                  <p className="text-2xl font-bold">{card.value ?? '—'}</p>
+                  <p className="text-2xl font-bold text-gray-800 mt-1">{card.value}</p>
                 </div>
-                <Icon className={`h-10 w-10 ${card.color} opacity-80`} />
+                <div className={`h-12 w-12 rounded-lg bg-gray-50 flex items-center justify-center ${card.color}`}>
+                  <Icon className="h-6 w-6" />
+                </div>
               </div>
             </Card>
           );
@@ -656,15 +628,18 @@ export default function DashboardPage() {
 }
 ```
 
-### 7.4 Patients List Page
+### 7.4 List Pages (Patients, Doctors, Appointments, Billing, etc.) — ❌ Not Created
+
+All 8 dashboard sub‑page directories exist but are **empty**. Each needs a `page.tsx` following this pattern:
 
 ```tsx
-// src/app/(dashboard)/patients/page.tsx
+// src/app/(dashboard)/patients/page.tsx (example — NOT YET CREATED)
 'use client';
 import { usePatients } from '@/hooks/usePatients';
 import { Table } from '@/components/ui/Table';
 import { Badge } from '@/components/ui/Badge';
 import { Spinner } from '@/components/ui/Spinner';
+import Link from 'next/link';
 
 export default function PatientsPage() {
   const { data: patients, isLoading } = usePatients();
@@ -675,14 +650,16 @@ export default function PatientsPage() {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Patients</h1>
-        <button className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">
+        <Link
+          href="/patients/new"
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"
+        >
           + Add Patient
-        </button>
+        </Link>
       </div>
-
       <Table
         columns={[
-          { header: 'Name', accessor: (p) => `${p.firstName} ${p.lastName}` },
+          { header: 'Name', accessor: (p: any) => `${p.firstName} ${p.lastName}` },
           { header: 'Gender', accessor: 'gender' },
           { header: 'Phone', accessor: 'phone' },
           { header: 'Blood Group', accessor: 'bloodGroup' },
@@ -695,280 +672,41 @@ export default function PatientsPage() {
 }
 ```
 
-### 7.5 Appointments Page
+### 7.5 Form Components — ❌ Not Created
 
-```tsx
-// src/app/(dashboard)/appointments/page.tsx
-'use client';
-import { useQuery } from '@tanstack/react-query';
-import api from '@/lib/api';
-import { format } from '@/lib/utils';
+The `components/forms/` directory is empty. Needed forms:
 
-const statusColors: Record<string, string> = {
-  scheduled: 'bg-blue-100 text-blue-800',
-  checked_in: 'bg-yellow-100 text-yellow-800',
-  completed: 'bg-green-100 text-green-800',
-  cancelled: 'bg-red-100 text-red-800',
-};
+| Form | Fields |
+|------|--------|
+| `PatientForm.tsx` | firstName, lastName, dateOfBirth, gender, phone, address, bloodGroup |
+| `DoctorForm.tsx` | firstName, lastName, specialization, licenseNumber, consultationFee, departmentId |
+| `AppointmentForm.tsx` | patientId (select), doctorId (select), appointmentDate, type, notes |
+| `BillingForm.tsx` | patientId (select), items, subtotal, tax, discount, total, dueDate, paymentMethod |
 
-export default function AppointmentsPage() {
-  const { data: appointments } = useQuery({
-    queryKey: ['appointments'],
-    queryFn: async () => {
-      const { data } = await api.get('/appointments');
-      return data;
-    },
-  });
+### 7.6 Reusable UI Components — ✅ Done
 
-  return (
-    <div>
-      <h1 className="text-2xl font-bold mb-6">Appointments</h1>
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="text-left p-3">Patient</th>
-              <th className="text-left p-3">Doctor</th>
-              <th className="text-left p-3">Date</th>
-              <th className="text-left p-3">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {appointments?.map((apt: any) => (
-              <tr key={apt.id} className="border-t hover:bg-gray-50">
-                <td className="p-3">{apt.Patient?.firstName} {apt.Patient?.lastName}</td>
-                <td className="p-3">{apt.Doctor?.firstName} {apt.Doctor?.lastName}</td>
-                <td className="p-3">{format(new Date(apt.appointmentDate), 'PPp')}</td>
-                <td className="p-3">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[apt.status]}`}>
-                    {apt.status.replace('_', ' ')}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-```
-
-### 7.6 Reusable UI Components
-
-```tsx
-// src/components/ui/Button.tsx
-'use client';
-import { cn } from '@/lib/utils';
-
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
-}
-
-export function Button({
-  children,
-  variant = 'primary',
-  size = 'md',
-  className,
-  ...props
-}: ButtonProps) {
-  return (
-    <button
-      className={cn(
-        'rounded-lg font-medium transition-colors disabled:opacity-50',
-        {
-          'bg-primary-600 text-white hover:bg-primary-700': variant === 'primary',
-          'bg-gray-100 text-gray-700 hover:bg-gray-200':    variant === 'secondary',
-          'bg-red-600 text-white hover:bg-red-700':         variant === 'danger',
-          'bg-transparent text-gray-600 hover:bg-gray-100': variant === 'ghost',
-        },
-        {
-          'px-2 py-1 text-xs':  size === 'sm',
-          'px-4 py-2 text-sm':  size === 'md',
-          'px-6 py-3 text-base': size === 'lg',
-        },
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </button>
-  );
-}
-```
-
-```tsx
-// src/components/ui/Table.tsx
-interface Column<T> {
-  header: string;
-  accessor: keyof T | ((item: T) => React.ReactNode);
-}
-
-interface TableProps<T> {
-  columns: Column<T>[];
-  data: T[];
-}
-
-export function Table<T>({ columns, data }: TableProps<T>) {
-  return (
-    <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-      <table className="w-full text-sm">
-        <thead className="bg-gray-50">
-          <tr>
-            {columns.map((col) => (
-              <th key={col.header} className="text-left p-3 font-medium text-gray-600">
-                {col.header}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row, i) => (
-            <tr key={i} className="border-t hover:bg-gray-50">
-              {columns.map((col) => (
-                <td key={col.header} className="p-3">
-                  {typeof col.accessor === 'function'
-                    ? col.accessor(row)
-                    : (row[col.accessor] as React.ReactNode)}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-```
-
-```tsx
-// src/components/ui/Card.tsx
-import { cn } from '@/lib/utils';
-
-export function Card({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <div className={cn('bg-white rounded-xl shadow-sm p-6', className)}>
-      {children}
-    </div>
-  );
-}
-```
-
-```tsx
-// src/components/ui/Spinner.tsx
-export function Spinner() {
-  return (
-    <div className="flex items-center justify-center h-64">
-      <div className="h-8 w-8 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin" />
-    </div>
-  );
-}
-```
-
-```tsx
-// src/components/ui/Badge.tsx
-import { cn } from '@/lib/utils';
-
-interface BadgeProps {
-  children: React.ReactNode;
-  variant?: 'success' | 'warning' | 'danger' | 'info';
-}
-
-export function Badge({ children, variant = 'info' }: BadgeProps) {
-  return (
-    <span
-      className={cn(
-        'px-2 py-1 rounded-full text-xs font-medium',
-        {
-          'bg-green-100 text-green-800': variant === 'success',
-          'bg-yellow-100 text-yellow-800': variant === 'warning',
-          'bg-red-100 text-red-800':    variant === 'danger',
-          'bg-blue-100 text-blue-800':  variant === 'info',
-        }
-      )}
-    >
-      {children}
-    </span>
-  );
-}
-```
-
-```tsx
-// src/lib/utils.ts
-export function cn(...classes: (string | undefined | null | false)[]) {
-  return classes.filter(Boolean).join(' ');
-}
-
-export function format(date: Date, fmt: string = 'PPp') {
-  // Simple formatter — you can use date-fns for production
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
-```
+All 6 UI components exist and match the implementations shown in the original document.
 
 ---
 
 ## 8. File Uploads to S3
 
-### Upload Hook
+### Upload Hook — ❌ Not Created (see Section 7.1)
 
-```tsx
-// src/hooks/useUpload.ts
-import { useState } from 'react';
-import api from '@/lib/api';
-import { toast } from 'sonner';
-
-export function useUpload() {
-  const [uploading, setUploading] = useState(false);
-
-  const uploadFile = async (file: File): Promise<string | null> => {
-    setUploading(true);
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const { data } = await api.post('/upload/single', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-
-      return data.url;
-    } catch (err) {
-      toast.error('Upload failed');
-      return null;
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  return { uploadFile, uploading };
-}
-```
-
-### FileUpload Component
+### FileUpload Component — ✅ Done
 
 ```tsx
 // src/components/ui/FileUpload.tsx
 'use client';
 import { useState, useRef } from 'react';
-import { useUpload } from '@/hooks/useUpload';
-import { Image, FileAudio, X, Upload } from 'lucide-react';
+import { toast } from 'sonner';
+import { Upload, X, FileAudio } from 'lucide-react';
+import api from '@/lib/api';
 
 interface FileUploadProps {
   onUploadComplete: (url: string) => void;
   accept?: string;
-  maxSize?: number; // MB
+  maxSize?: number;
 }
 
 export function FileUpload({
@@ -977,7 +715,7 @@ export function FileUpload({
   maxSize = 10,
 }: FileUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { uploadFile, uploading } = useUpload();
+  const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
 
@@ -998,12 +736,23 @@ export function FileUpload({
 
   const handleUpload = async () => {
     if (!file) return;
-    const url = await uploadFile(file);
-    if (url) {
-      onUploadComplete(url);
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const { data } = await api.post('/upload/single', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      onUploadComplete(data.data.url);
       toast.success('Upload complete');
       setFile(null);
       setPreview(null);
+    } catch {
+      toast.error('Upload failed');
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -1021,15 +770,11 @@ export function FileUpload({
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
-          className="w-full border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary-400 transition-colors"
+          className="w-full border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors"
         >
           <Upload className="mx-auto h-8 w-8 text-gray-400" />
-          <p className="mt-2 text-sm text-gray-500">
-            Click to upload or drag & drop
-          </p>
-          <p className="text-xs text-gray-400">
-            Images, Audio, PDF (max {maxSize}MB)
-          </p>
+          <p className="mt-2 text-sm text-gray-500">Click to upload or drag & drop</p>
+          <p className="text-xs text-gray-400">Images, Audio, PDF (max {maxSize}MB)</p>
         </button>
       ) : (
         <div className="border rounded-lg p-4 space-y-3">
@@ -1045,7 +790,7 @@ export function FileUpload({
             <button
               onClick={handleUpload}
               disabled={uploading}
-              className="flex-1 py-2 bg-primary-600 text-white rounded-lg text-sm hover:bg-primary-700 disabled:opacity-50"
+              className="flex-1 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 disabled:opacity-50"
             >
               {uploading ? 'Uploading...' : 'Upload'}
             </button>
@@ -1069,65 +814,56 @@ export function FileUpload({
 
 ```env
 # .env.local
-NEXT_PUBLIC_API_URL=http://localhost:5000/api/v1
+NEXT_PUBLIC_API_URL=/api/v1
+API_BACKEND_URL=http://54.66.17.108:5000/api/v1
 NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=your_nextauth_secret_change_in_production
+NEXTAUTH_SECRET=change_this_to_a_random_secret_in_production
 ```
 
-### next.config.js
+> **Note:** `NEXT_PUBLIC_API_URL` is set to `/api/v1` — the Next.js `rewrites` in `next.config.ts` proxy these requests to `API_BACKEND_URL`. The `API_BACKEND_URL` is used directly by NextAuth (server-side).
 
-```js
-// next.config.js
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+### next.config.ts
+
+```ts
+// next.config.ts
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '*.s3.amazonaws.com',
-      },
-      {
-        protocol: 'https',
-        hostname: '*.s3.*.amazonaws.com',
-      },
+      { protocol: 'https', hostname: '*.s3.amazonaws.com' },
+      { protocol: 'https', hostname: '*.s3.*.amazonaws.com' },
     ],
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/api/v1/:path*',
+        destination: `${process.env.API_BACKEND_URL || 'http://54.66.17.108:5000/api/v1'}/:path*`,
+      },
+    ];
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;
 ```
 
 ---
 
 ## 10. Deployment to Vercel
 
-### 10.1 Vercel Config
-
-```json
-// vercel.json
-{
-  "framework": "nextjs",
-  "buildCommand": "npm run build",
-  "outputDirectory": ".next",
-  "env": {
-    "NEXT_PUBLIC_API_URL": "@next_public_api_url",
-    "NEXTAUTH_URL": "@nextauth_url",
-    "NEXTAUTH_SECRET": "@nextauth_secret"
-  }
-}
-```
-
-### 10.2 Environment Variables on Vercel
+### 10.1 Environment Variables on Vercel
 
 Set these in Vercel Dashboard → Project → Settings → Environment Variables:
 
 | Key | Value |
 |---|---|
-| `NEXT_PUBLIC_API_URL` | `https://api.yourdomain.com/api/v1` |
+| `NEXT_PUBLIC_API_URL` | `/api/v1` |
+| `API_BACKEND_URL` | `https://api.yourdomain.com/api/v1` |
 | `NEXTAUTH_URL` | `https://your-app.vercel.app` |
 | `NEXTAUTH_SECRET` | Random 32-char string |
 
-### 10.3 Deploy
+### 10.2 Deploy
 
 ```bash
 # Option 1: Vercel CLI
@@ -1138,33 +874,51 @@ vercel --prod
 git push origin main
 ```
 
+> **vercel.json** is optional — Vercel auto-detects Next.js.
+
 ---
 
 ## Summary
 
 ```
-┌───────────────────────────────────────────────┐
-│              Browser (User)                     │
-└───────────────────┬───────────────────────────┘
-                    │ HTTPS
-┌───────────────────▼───────────────────────────┐
-│         Vercel (Next.js App Router)            │
-│  ┌───────────┐ ┌──────────┐ ┌──────────────┐ │
-│  │ NextAuth  │ │ React    │ │ Tailwind CSS │ │
-│  │ (JWT)     │ │ Query    │ │ UI           │ │
-│  └───────────┘ └──────────┘ └──────────────┘ │
-│  │                                             │
-│  └──────────────┬──────────────────────────────┘
-│                 │ Axios (Bearer Token)
-┌─────────────────▼──────────────────────────────┐
-│   Backend API (Express)                         │
-│   http://localhost:5000/api/v1                  │
-└─────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────┐
+│                  Browser (User)                   │
+└─────────────────────┬───────────────────────────┘
+                      │ HTTPS
+┌─────────────────────▼───────────────────────────┐
+│           Vercel (Next.js App Router)             │
+│  ┌───────────┐ ┌──────────┐ ┌────────────────┐  │
+│  │ NextAuth  │ │ React    │ │ Tailwind CSS   │  │
+│  │ (JWT)     │ │ Query    │ │ v4 (CSS‑based) │  │
+│  └───────────┘ └──────────┘ └────────────────┘  │
+│  └──────────────┬───────────────────────────────┘
+│                 │ Rewrite /api/v1/* → backend
+│                 │ Axios (Bearer token auto-attached)
+┌─────────────────▼───────────────────────────────┐
+│         Backend API (Express / EC2)               │
+│         http://localhost:5000/api/v1              │
+└───────────────────────────────────────────────────┘
 ```
 
 **Key Integration Points:**
 - All API calls go through a single Axios instance with auto-auth
-- NextAuth.js handles JWT session management
+- Next.js rewrites proxy `/api/v1/*` to the backend (avoids CORS in production)
+- NextAuth.js handles JWT session management (server-side)
 - React Query handles caching, loading, and error states
-- File uploads go directly from browser → backend → S3
-- Tailwind utility classes used throughout for styling
+- File uploads go from browser → backend → S3
+- Tailwind v4 uses CSS-based config (`@import "tailwindcss"`), no `tailwind.config.ts`
+
+### Implementation Status
+
+| Area | Status |
+|------|--------|
+| Auth (login / register) | ✅ Done |
+| Dashboard page | ✅ Done |
+| Layout (sidebar, header) | ✅ Done |
+| UI Components (6 components) | ✅ Done |
+| API client + NextAuth + React Query | ✅ Done |
+| List pages (patients, doctors, etc.) | ❌ 8 pages not built |
+| Form components | ❌ 4 forms not built |
+| Data hooks (usePatients, etc.) | ❌ 5 hooks not built |
+| TypeScript types | ❌ 5 type files not built |
+| File upload hook (useUpload) | ❌ Not built |
