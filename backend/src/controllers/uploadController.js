@@ -1,5 +1,6 @@
 import { MedicalRecord, AuditLog } from '../models/index.js';
 import { s3Client } from '../config/s3.js';
+import { env } from '../config/env.js';
 import { DeleteObjectCommand } from '@aws-sdk/client-s3';
 import logger from '../utils/logger.js';
 
@@ -67,7 +68,7 @@ export const deleteFile = async (req, res, next) => {
     const { key } = req.params;
 
     await s3Client.send(new DeleteObjectCommand({
-      Bucket: process.env.AWS_S3_BUCKET,
+      Bucket: env.aws.s3Bucket,
       Key: key,
     }));
 
