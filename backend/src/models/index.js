@@ -46,6 +46,8 @@ Prescription.belongsTo(Doctor, { foreignKey: 'doctorId' });
 Patient.hasMany(Billing, { foreignKey: 'patientId' });
 Billing.belongsTo(Patient, { foreignKey: 'patientId' });
 
+AuditLog.belongsTo(User, { foreignKey: 'userId' });
+
 export {
   sequelize, User, Patient, Doctor, Department,
   Appointment, MedicalRecord, Prescription, Billing, AuditLog,
