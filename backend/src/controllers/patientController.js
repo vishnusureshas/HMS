@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs';
 import { Op } from 'sequelize';
 import { Patient, User, Appointment, MedicalRecord, Billing } from '../models/index.js';
 import logger from '../utils/logger.js';
@@ -76,14 +77,23 @@ export const create = async (req, res, next) => {
   try {
     const { userId, firstName, lastName, dateOfBirth, gender, phone, address, bloodGroup } = req.body;
 
-    const user = await User.findByPk(userId);
-    if (!user) return res.status(400).json({ success: false, error: 'User not found' });
+    let targetUserId = userId;
 
-    const existing = await Patient.findOne({ where: { userId } });
-    if (existing) return res.status(400).json({ success: false, error: 'Patient profile already exists for this user' });
+    if (!targetUserId) {
+      const email = `patient_${Date.now()}@hospital.com`;
+      const hash = await bcrypt.hash('patient123', 12);
+      const user = await User.create({ email, password: hash, role: 'patient', isActive: true });
+      targetUserId = user.id;
+    } else {
+      const user = await User.findByPk(targetUserId);
+      if (!user) return res.status(400).json({ success: false, error: 'User not found' });
+
+      const existing = await Patient.findOne({ where: { userId: targetUserId } });
+      if (existing) return res.status(400).json({ success: false, error: 'Patient profile already exists for this user' });
+    }
 
     const patient = await Patient.create({
-      userId, firstName, lastName, dateOfBirth, gender, phone, address, bloodGroup,
+      userId: targetUserId, firstName, lastName, dateOfBirth, gender, phone, address, bloodGroup,
     });
 
     res.status(201).json({ success: true, data: patient });
