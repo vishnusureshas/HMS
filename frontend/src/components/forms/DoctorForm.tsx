@@ -18,6 +18,7 @@ interface Props {
 }
 
 export function DoctorForm({ initial, onSubmit, loading }: Props) {
+  const isEdit = !!initial;
   const { data: departments } = useQuery({
     queryKey: ['departments'],
     queryFn: async () => {
@@ -33,6 +34,8 @@ export function DoctorForm({ initial, onSubmit, loading }: Props) {
     licenseNumber: initial?.licenseNumber || '',
     consultationFee: initial?.consultationFee || '',
     departmentId: initial?.departmentId || '',
+    email: initial?.email || '',
+    password: '',
   });
 
   const update = (field: keyof DoctorFormData, value: string) =>
@@ -40,11 +43,30 @@ export function DoctorForm({ initial, onSubmit, loading }: Props) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(form);
+    const payload = { ...form };
+    if (isEdit) {
+      delete payload.email;
+      delete payload.password;
+    }
+    onSubmit(payload);
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {!isEdit && (
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input type="email" value={form.email} onChange={(e) => update('email', e.target.value)}
+              className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-gray-50 text-black" required />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <input type="password" value={form.password} onChange={(e) => update('password', e.target.value)}
+              className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-gray-50 text-black" minLength={6} required />
+          </div>
+        </div>
+      )}
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>

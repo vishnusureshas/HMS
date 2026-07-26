@@ -28,4 +28,6 @@ export interface DoctorFormData {
   licenseNumber: string;
   consultationFee: string;
   departmentId: string;
+  email?: string;
+  password?: string;
 }
