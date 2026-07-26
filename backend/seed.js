@@ -2,6 +2,8 @@ import bcrypt from 'bcryptjs';
 import { sequelize } from './src/config/database.js';
 import { User, Patient, Doctor } from './src/models/index.js';
 
+// run via: docker exec hospital-backend node seed.js
+
 const seed = async () => {
   try {
     await sequelize.sync({ force: false });
